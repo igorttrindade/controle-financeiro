@@ -1,14 +1,13 @@
 import psycopg2
-from config import DATABASE_CONFIG
 
-def get_db_connection():
+def get_db_connection(config):
     try:
         conn = psycopg2.connect(
-            host=DATABASE_CONFIG['host'],
-            port=DATABASE_CONFIG['port'],
-            user=DATABASE_CONFIG['user'],
-            password=DATABASE_CONFIG['password'],
-            database=DATABASE_CONFIG['database']
+            host=config['host'],
+            port=config['port'],
+            user=config['user'],
+            password=config['password'],
+            database=config['database']
         )
         return conn
     except psycopg2.OperationalError as err:
