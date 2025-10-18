@@ -1,6 +1,7 @@
 from database.connection import get_db_connection
 from flask import request, jsonify, Blueprint, current_app
 from extensions import bcrypt
+import psycopg2
 
 users_bp = Blueprint('users', __name__)
     
@@ -33,6 +34,8 @@ def register():
                 conn.commit()
                 return jsonify({'message': 'Usuário criado com sucesso!'})
             
+    except psycopg2.errors.UniqueViolation as e:
+        return jsonify({'error': f'Usuário já registrado.'}),409
     except Exception as e:
         return jsonify({'error': f"Erro ao registrar usuário: {e}"}), 500
     
@@ -64,14 +67,12 @@ def login():
                 if user_record is None:
                     return jsonify({'error': 'Email ou senha inválidos'}), 401
                 password_matches = bcrypt.check_password_hash(user_record[2], password)
-            if password_matches:
-                return jsonify({
-                    'message': 'Login realizado com sucesso',
-                    'user_id': user_record[0],
-                    'email': user_record[1]
-                }), 200
-            else:
-                return jsonify({'error': 'Email ou senha inválidos'}), 401
+                if password_matches:
+                    return jsonify({
+                        'message': 'Login realizado com sucesso',
+                        'user_id': user_record[0]}), 200
+                else:
+                    return jsonify({'error': 'Email ou senha inválidos'}), 401
     except Exception as e:
         return jsonify({'error':f"Erro ao realizar login.{e}"}),500
     finally:
