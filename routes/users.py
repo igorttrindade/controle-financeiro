@@ -27,7 +27,7 @@ def register():
             
             password_hashed = hash_password(password)
 
-            with open ('./sql/query_register.sql', 'r') as r:
+            with open ('./sql/query_register_user.sql', 'r') as r:
                 query_register = r.read()
             if conn:
                 cnx.execute(query_register, (name_user, email_user, dt_nascimento_user, password_hashed, tel_user))
@@ -56,10 +56,9 @@ def login():
             cnx = conn.cursor()
             email_user = request.json.get('email_user')
             password = request.json.get('password')
-            password_hashed = hash_password(password)
             if not all([email_user, password]):
                 return jsonify({'error': 'Email e senha são obrigatórios'}), 400
-            with open ('./sql/query_login.sql','r') as r:
+            with open ('./sql/query_login_user.sql','r') as r:
                 query_login = r.read()
             if conn:
                 cnx.execute(query_login, (email_user,))
@@ -80,3 +79,29 @@ def login():
             cnx.close()
             conn.close()
     return "Página de login"
+
+@users_bp.route('/<id_user>', methods=['DELETE'])
+def delete_user(id_user):
+    conn = None
+    cnx = None
+    try:
+        conn = get_db_connection(current_app.config['DATABASE_CONFIG'])
+        cnx = conn.cursor()
+        with open('./sql/query_delete_user.sql','r') as r:
+            query_delete = r.read()
+        if conn:
+            cnx.execute(query_delete, (id_user,))
+
+            if cnx.rowcount == 0:
+                return jsonify({'error': 'Usuário não encontrado'}), 404
+            conn.commit()
+        return jsonify({'sucess':'Usuário deletado com sucesso!'}), 200
+    except psycopg2.errors.ForeignKeyViolation as err:
+        return jsonify({'error':f'Erro ao deletar usuário: {err}'}),400
+    except Exception as e:
+        return jsonify({'error': f"Erro no servidor: {e}"}), 500
+    finally:
+        if cnx:
+            cnx.close()
+        if conn:
+            conn.close()

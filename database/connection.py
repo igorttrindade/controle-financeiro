@@ -11,8 +11,8 @@ def get_db_connection(config):
         )
         return conn
     except psycopg2.OperationalError as err:
-        print(f"Erro ao conectar ao banco de dados: {err}")
+        print(f"Erro ao conectar ao banco de dados: {err}"), 409
         return None
     except Exception as e:
-        print(f"Ocorreu um erro inesperado: {e}")
+        print(f"Ocorreu um erro inesperado: {e}"), 500
         return None
