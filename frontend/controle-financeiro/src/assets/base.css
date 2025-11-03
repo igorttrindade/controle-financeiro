@@ -84,3 +84,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+:root[data-theme="light"] {
+  --color-background: var(--vt-c-white);
+  --color-background-soft: var(--vt-c-white-soft);
+  --color-text: var(--vt-c-text-light-1);
+  --color-border: var(--vt-c-divider-light-2);
+}
+
+:root[data-theme="dark"] {
+  --color-background: var(--vt-c-black);
+  --color-background-soft: var(--vt-c-black-soft);
+  --color-text: var(--vt-c-text-dark-1);
+  --color-border: var(--vt-c-divider-dark-2);
+}
