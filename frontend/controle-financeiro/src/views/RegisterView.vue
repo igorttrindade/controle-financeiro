@@ -1,12 +1,12 @@
 <template>
-  <div class="register-container" :class="{ 'light-mode': isLightMode }">
+  <div class="register-container" :class="{ dark: !isLightMode }">
     <div class="theme-toggle">
       <button @click="toggleTheme">
         {{ isLightMode ? '🌙 Modo Escuro' : '☀️ Modo Claro' }}
       </button>
     </div>
 
-    <div class="card">
+    <div class="card" data-aos="zoom-in">
       <img src="@/assets/finance_logo.png" alt="Logo" class="logo" />
       <h1>Criar Conta</h1>
 
@@ -38,15 +38,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue"
+import AOS from "aos"
+import "aos/dist/aos.css"
 
-const isLightMode = ref(localStorage.getItem('theme') === 'light')
+const isLightMode = ref(localStorage.getItem("theme") === "light")
 
 function toggleTheme() {
   isLightMode.value = !isLightMode.value
-  localStorage.setItem('theme', isLightMode.value ? 'light' : 'dark')
+  const newTheme = isLightMode.value ? "light" : "dark"
+  localStorage.setItem("theme", newTheme)
+  document.documentElement.setAttribute("data-theme", newTheme)
 }
 
+onMounted(() => {
+  AOS.init({ duration: 1000, once: true })
+  const savedTheme = localStorage.getItem("theme") || "light"
+  document.documentElement.setAttribute("data-theme", savedTheme)
+  isLightMode.value = savedTheme === "light"
+})
 </script>
 
 <style scoped>
@@ -55,40 +65,49 @@ function toggleTheme() {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0e0e0e, #1a1a1a);
-  color: #fff;
+  background: var(--color-background);
   transition: background 0.4s, color 0.4s;
+  color: var(--color-text);
 }
 
 .register-container.light-mode {
-  background: linear-gradient(135deg, #f0f0f0, #d9d9d9);
-  color: #000;
+  background: var(--bg-light);
+  color: var(--text-light);
 }
 
 .card {
-  background-color: var(--color-background-soft, #1f1f1f);
-  padding: 2.5rem;
+  background: var(--color-background-soft);
+  padding: 2.5rem 3rem;
   border-radius: 16px;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 400px;
   text-align: center;
-  transition: background-color 0.4s, box-shadow 0.4s;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.register-container:not(.light-mode) .card {
+  background: var(--bg-light);
+  color: var(--text-light);
 }
 
 .register-container.light-mode .card {
-  background-color: #fff;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  color: #000;
 }
 
 .logo {
-  width: 90px;
-  margin-bottom: 1.5rem;
+  width: 70px;
+  height: 70px;
+  margin-bottom: 1rem;
+  object-fit: contain;
 }
 
 h1 {
   margin-bottom: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 600;
+  color: inherit;
 }
 
 .form-container {
@@ -100,82 +119,56 @@ h1 {
 
 label {
   font-size: 0.9rem;
-  color: #ccc;
-  transition: color 0.4s;
-}
-
-.register-container.light-mode label {
-  color: #333;
+  font-weight: 600;
+  color: inherit;
 }
 
 input {
-  padding: 0.8rem;
+  padding: 0.7rem;
+  border: 1px solid var(--color-border, #333);
   border-radius: 8px;
-  border: 1px solid #333;
-  background-color: #2a2a2a;
-  color: #fff;
   outline: none;
-  transition: all 0.4s;
+  background: transparent;
+  color: inherit;
+  transition: border 0.2s ease;
 }
 
 input:focus {
-  border-color: #555;
-}
-
-.register-container.light-mode input {
-  background-color: #f5f5f5;
-  border-color: #ccc;
-  color: #000;
+  border-color: var(--accent-dark, #888);
 }
 
 button {
   margin-top: 1rem;
-  padding: 0.8rem;
+  background: var(--color-text);
+  color: var(--color-background-soft);
   border: none;
-  border-radius: 8px;
-  background-color: #3a3a3a;
-  color: #fff;
-  font-weight: 600;
+  padding: 0.8rem;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
 button:hover {
-  background-color: #505050;
-}
-
-.register-container.light-mode button {
-  background-color: #ddd;
-  color: #000;
-}
-
-.register-container.light-mode button:hover {
-  background-color: #bbb;
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 .login-link {
   text-align: center;
   margin-top: 1rem;
   font-size: 0.9rem;
-  color: #ccc;
+  color: inherit;
 }
 
 .login-link a {
-  color: #fff;
-  font-weight: 500;
+  color: var(--accent-light);
+  font-weight: 600;
   text-decoration: none;
 }
 
 .login-link a:hover {
   text-decoration: underline;
-}
-
-.register-container.light-mode .login-link {
-  color: #333;
-}
-
-.register-container.light-mode .login-link a {
-  color: #000;
 }
 
 .theme-toggle {
@@ -186,22 +179,27 @@ button:hover {
 
 .theme-toggle button {
   background: none;
-  border: 1px solid #444;
-  color: #fff;
+  border: 1px solid var(--color-border, #444);
+  color: var(--color-text, #fff);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .theme-toggle button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.register-container.dark .theme-toggle button {
+  border-color: #444;
+  color: #fff;
 }
 
 .register-container.light-mode .theme-toggle button {
-  color: #000;
   border-color: #ccc;
+  color: #000;
 }
 
 .register-container.light-mode .theme-toggle button:hover {
