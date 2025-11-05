@@ -17,7 +17,7 @@
 
       <p class="register-text">
         Não possui conta?
-        <RouterLink to="/cadastro" class="register-link">Crie uma</RouterLink>
+        <RouterLink to="/register" class="register-link">Crie uma</RouterLink>
       </p>
     </div>
   </div>
@@ -109,8 +109,8 @@ input:focus {
 }
 
 .login-btn {
-  background: var(--accent-light);
-  color: white;
+  background: var(--color-text);
+  color: var(--color-background-soft);
   border: none;
   padding: 0.8rem;
   border-radius: 10px;
