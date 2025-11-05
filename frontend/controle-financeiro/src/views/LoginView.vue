@@ -1,31 +1,143 @@
-    <template>
-    <h1>Login</h1>
-    <div id='container'>
-        <form id='form-container'>
-            <label>Email</label>
-        <input type='email' placeholder='Email'>
-        
-        <label>Senha</label>
-        <input type='password' placeholder='Senha'>
-        
-        <button type='button'>Entrar</button> 
-        </form>
+<template>
+  <div class="login-page" :class="{ dark: isDark }">
+    <div class="login-card" data-aos="zoom-in">
+      <img :src="logo" alt="Logo FinanceFlow" class="logo-img" />
+
+      <h1>Entrar</h1>
+
+      <form class="login-form">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="Digite seu email" />
+
+        <label for="password">Senha</label>
+        <input id="password" type="password" placeholder="Digite sua senha" />
+
+        <button type="button" class="login-btn">Entrar</button>
+      </form>
+
+      <p class="register-text">
+        Não possui conta?
+        <RouterLink to="/cadastro" class="register-link">Crie uma</RouterLink>
+      </p>
     </div>
-    </template>
+  </div>
+</template>
 
-    <script setup>
+<script setup>
+import AOS from "aos"
+import "aos/dist/aos.css"
+import { ref, onMounted } from "vue"
+import logo from "@/assets/finance_logo.png"
 
-    </script>
+const theme = ref(localStorage.getItem("theme") || "light")
+const isDark = ref(theme.value === "dark")
 
-    <style scoped>
-    div{
-        display:flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    form{
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-    </style>
+onMounted(() => {
+  AOS.init({ duration: 1000, once: true })
+  document.documentElement.setAttribute("data-theme", theme.value)
+})
+</script>
+
+<style scoped>
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: var(--color-background);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.login-page.dark {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.login-card {
+  background: var(--color-background-soft);
+  padding: 2.5rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: 0.3s ease;
+}
+
+.login-page.dark .login-card {
+  background: #1c1e24;
+}
+
+.logo-img {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 1rem;
+  object-fit: contain;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: var(--color-text);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+input {
+  padding: 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  outline: none;
+  background: transparent;
+  color: var(--color-text);
+  transition: border 0.2s ease;
+}
+
+input:focus {
+  border-color: var(--accent-dark);
+}
+
+.login-btn {
+  background: var(--accent-light);
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.register-text {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.register-link {
+  text-decoration: none;
+  color: var(--accent-light);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+</style>

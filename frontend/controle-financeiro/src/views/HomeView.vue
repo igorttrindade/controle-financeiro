@@ -2,7 +2,8 @@
   <div class="home" :class="{ dark: isDark }">
     <header class="header" data-aos="fade-down">
       <div class="logo">
-        <h1>💸 FinanceFlow</h1>
+        <img :src="logo" alt="Logo FinanceFlow" class="logo-img" />
+        <h1>FinanceFlow</h1>
       </div>
       <nav class="nav">
         <RouterLink to="/" class="nav-link">Início</RouterLink>
@@ -23,7 +24,7 @@
         <RouterLink to="/login" class="cta-btn">Começar agora</RouterLink>
       </div>
       <div class="hero-image">
-        <!--<img src="/finance-dashboard.png" alt="Dashboard financeiro" />-->
+      <img src="../assets/finance_dashboard.png" alt="Dashboard financeiro" />
       </div>
     </section>
 
@@ -56,6 +57,7 @@
 <script setup>
 import AOS from "aos"
 import "aos/dist/aos.css"
+import logo from "@/assets/finance_logo.png"
 import { onMounted, ref } from "vue"
 
 const theme = ref(localStorage.getItem("theme") || "light")
@@ -84,6 +86,7 @@ onMounted(() => {
 }
 
 .home {
+  max-width: 100%;
   min-height: 100vh;
   background: var(--color-background);
   color: var(--color-text);
@@ -196,8 +199,8 @@ onMounted(() => {
 
 .cta-btn {
   text-decoration: none;
-  background: var(--color-background-soft);
-  color: var(--color-text);
+  background: var(--color-text);
+  color: var(--color-background-soft);
   padding: 0.9rem 1.6rem;
   border-radius: 10px;
   font-weight: 600;
@@ -285,5 +288,18 @@ onMounted(() => {
   font-size: 0.9rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   opacity: 0.8;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo-img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
 }
 </style>
