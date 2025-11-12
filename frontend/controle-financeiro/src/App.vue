@@ -12,22 +12,11 @@ const isFullLayout = computed(() => route.meta.fullLayout ?? true)
   <div id="main-layout">
     
     <div v-if="isFullLayout">
-      <header>
-        <nav>
-          <RouterLink to="/dashboard">Dashboard</RouterLink>
-          <RouterLink to="/transactions">Transações</RouterLink>
-          <RouterLink to="/logout">Sair</RouterLink>
-        </nav>
-      </header>
       
-      <main>
+      <main class="main-content">
         <RouterView />
         <NotificationToast />
       </main>
-
-      <footer>
-        <p>&copy; 2025 App Controle Financeiro</p>
-      </footer>
     </div>
 
     <div v-else>
@@ -40,6 +29,10 @@ const isFullLayout = computed(() => route.meta.fullLayout ?? true)
 </template>
 
 <style>
+
+.main-content {
+  padding-top: 60px;
+}
 
 body {
   background-color: #121212;
