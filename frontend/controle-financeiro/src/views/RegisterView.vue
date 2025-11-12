@@ -53,7 +53,6 @@ const emailUser = ref('')
 const dtNascimentoUser = ref('')
 const celUser = ref('')
 const passwordUser = ref('')
-const message = ref('')
 
 async function handleRegister() {
   if (!nameUser.value || !emailUser.value || !dtNascimentoUser.value || !celUser.value || !passwordUser.value) {
