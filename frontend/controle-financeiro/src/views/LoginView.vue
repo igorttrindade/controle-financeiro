@@ -17,7 +17,9 @@
         <label for="password">Senha</label>
         <input id="password" type="password" v-model="passwordUser" placeholder="Digite sua senha" />
 
-        <button type="submit" class="login-btn">Entrar</button>
+        <button type="submit" class="login-btn" :disabled="isLoading">
+          {{ isLoading ? 'Entrando...' : 'Entrar' }}
+        </button>
       </form>
 
       <p class="register-text">
@@ -42,8 +44,14 @@ const { addNotification } = useNotifications()
 
 const emailUser = ref('')
 const passwordUser = ref('')
+const isLoading = ref(false)
 
 async function handleLoginUser() {
+  if (!emailUser.value || !passwordUser.value) {
+    addNotification("⚠️ Preencha seu e-mail e senha para continuar.", "warning")
+    return
+  }
+  isLoading.value = true
   try{
     const resolve = await  loginUser({
       email_user: emailUser.value,
@@ -54,6 +62,8 @@ async function handleLoginUser() {
   }catch(err){
     addNotification("❌ Ocorreu um erro ao entrar. Tente novamente em alguns instantes.", "error")
     console.error(err)
+  }finally {
+    isLoading.value = false
   }
 }
 
