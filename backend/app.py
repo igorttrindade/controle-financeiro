@@ -1,10 +1,12 @@
 from flask import Flask
+from flask_cors import CORS
 from database.connection import get_db_connection
 from routes.users import users_bp
 from extensions import bcrypt
 from config import DATABASE_CONFIG
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 bcrypt.init_app(app)
 app.config['DATABASE_CONFIG'] = DATABASE_CONFIG
 

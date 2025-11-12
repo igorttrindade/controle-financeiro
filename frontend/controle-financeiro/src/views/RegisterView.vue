@@ -10,23 +10,23 @@
       <img src="@/assets/finance_logo.png" alt="Logo" class="logo" />
       <h1>Criar Conta</h1>
 
-      <form class="form-container">
+      <form @submit.prevent = "handleRegister" class="form-container">
         <label>Nome</label>
-        <input type="text" placeholder="Seu nome" />
+        <input type="text" v-model="nameUser" placeholder="Seu nome" />
 
         <label>Email</label>
-        <input type="email" placeholder="Seu email" />
+        <input type="email" v-model="emailUser" placeholder="Seu email" />
 
         <label>Data de Nascimento</label>
-        <input type="date" />
+        <input type="date" v-model="dtNascimentoUser"/>
 
         <label>Celular</label>
-        <input type="text" placeholder="Seu número de celular" maxlength="11" />
+        <input type="text" v-model="celUser" placeholder="Seu número de celular" maxlength="11" />
 
         <label>Senha</label>
-        <input type="password" placeholder="Crie uma senha" />
+        <input type="password" v-model="passwordUser" placeholder="Crie uma senha" />
 
-        <button type="button">Registrar</button>
+        <button type="submit">Registrar</button>
 
         <p class="login-link">
           Já possui conta?
@@ -41,6 +41,31 @@
 import { ref, onMounted } from "vue"
 import AOS from "aos"
 import "aos/dist/aos.css"
+import { registerUser } from "@/services/authServices"
+
+const nameUser = ref('')
+const emailUser = ref('')
+const dtNascimentoUser = ref('')
+const celUser = ref('')
+const passwordUser = ref('')
+const message = ref('')
+
+async function handleRegister() {
+  try{
+    const result = await registerUser({
+      name_user: nameUser.value,
+      email_user: emailUser.value,
+      dt_nascimento_user: dtNascimentoUser.value,
+      tel_user: celUser.value,
+      password: passwordUser.value,
+    })
+    message.value = "Usuário criado com sucesso!"
+    console.log(result)
+  } catch (err){
+    message.value = "Erro ao criar usuário!"
+    console.error(err)
+  }
+}
 
 const isLightMode = ref(localStorage.getItem("theme") === "light")
 
@@ -57,6 +82,8 @@ onMounted(() => {
   document.documentElement.setAttribute("data-theme", savedTheme)
   isLightMode.value = savedTheme === "light"
 })
+
+
 </script>
 
 <style scoped>
