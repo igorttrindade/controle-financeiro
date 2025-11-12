@@ -35,6 +35,7 @@
       </form>
     </div>
   </div>
+  <NotificationToast />
 </template>
 
 <script setup>
@@ -42,6 +43,10 @@ import { ref, onMounted } from "vue"
 import AOS from "aos"
 import "aos/dist/aos.css"
 import { registerUser } from "@/services/authServices"
+import NotificationToast from "@/components/NotificationToast.vue"
+import { useNotifications } from "@/composables/useNotifications"
+
+const { addNotification } = useNotifications()
 
 const nameUser = ref('')
 const emailUser = ref('')
@@ -51,6 +56,21 @@ const passwordUser = ref('')
 const message = ref('')
 
 async function handleRegister() {
+  if (!nameUser.value || !emailUser.value || !dtNascimentoUser.value || !celUser.value || !passwordUser.value) {
+    addNotification("⚠️ Por favor, preencha todos os campos antes de continuar.", "warning")
+    return
+  }
+
+  if (passwordUser.value.length < 6) {
+    addNotification("🔒 A senha deve conter pelo menos 6 caracteres.", "warning")
+    return
+  }
+
+  if (!/^\d{11}$/.test(celUser.value)) {
+    addNotification("📱 O número de celular deve conter 11 dígitos (DDD + número).", "warning")
+    return
+  }
+
   try{
     const result = await registerUser({
       name_user: nameUser.value,
@@ -59,10 +79,14 @@ async function handleRegister() {
       tel_user: celUser.value,
       password: passwordUser.value,
     })
-    message.value = "Usuário criado com sucesso!"
+    addNotification("🎉 Conta criada com sucesso! Seja bem-vindo(a) à plataforma.", "success")
     console.log(result)
-  } catch (err){
-    message.value = "Erro ao criar usuário!"
+  } catch (err) {
+    if (err.response && err.response.status === 409) {
+      addNotification("⚠️ Este e-mail já está cadastrado. Tente outro ou faça login.", "warning")
+    } else {
+      addNotification("❌ Ocorreu um erro ao criar sua conta. Tente novamente em alguns instantes.", "error")
+    }
     console.error(err)
   }
 }

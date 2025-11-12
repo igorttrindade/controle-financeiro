@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView, useRoute, RouterLink } from 'vue-router'
 import { computed } from 'vue'
+import NotificationToast from "@/components/NotificationToast.vue"
 
 const route = useRoute() 
 
@@ -21,6 +22,7 @@ const isFullLayout = computed(() => route.meta.fullLayout ?? true)
       
       <main>
         <RouterView />
+        <NotificationToast />
       </main>
 
       <footer>
